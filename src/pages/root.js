@@ -1,0 +1,26 @@
+import { Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
+import React from "react";
+
+const Root = () => {
+  return (
+    <div>
+      <nav>
+        <ul>
+          <li>
+            <Link to={`/`}>Home</Link>
+          </li>
+          <li>
+            <Link to={`aboutme`}>About me</Link>
+          </li>
+          <li>
+            <Link to={`contact`}>Contact</Link>
+          </li>
+        </ul>
+      </nav>
+      <Outlet />
+    </div>
+  );
+};
+
+export default Root;
