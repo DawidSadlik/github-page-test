@@ -2,10 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Root from "./pages/root";
 import AboutMe from "./pages/aboutme";
-import Contact from "./pages/contact";
+import ContactPage from "./pages/ContactPage";
 import App from "./App";
 import { RouterProvider, createHashRouter } from "react-router-dom";
 import "./index.css";
+import RepositoryPage from "./pages/RepositoryPage";
 
 const router = createHashRouter([
   {
@@ -22,7 +23,11 @@ const router = createHashRouter([
       },
       {
         path: "contact",
-        element: <Contact />,
+        element: <ContactPage />,
+      },
+      {
+        path: "repository/:repositoryName",
+        element: <RepositoryPage />,
       },
     ],
   },
