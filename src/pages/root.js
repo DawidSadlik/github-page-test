@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
 import React from "react";
+import { UserContext } from "../services/UserContext";
 
 const Root = () => {
   return (
@@ -19,6 +20,9 @@ const Root = () => {
         </ul>
       </nav>
       <Outlet />
+      {/* <UserContext.Provider value={{ value: "Some value", name: "Some name" }}>
+        <Outlet />
+      </UserContext.Provider> */}
     </div>
   );
 };
