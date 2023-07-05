@@ -17,6 +17,9 @@ const Root = () => {
           <li>
             <Link to={`contact`}>Contact</Link>
           </li>
+          <li>
+            <Link to={`meongithubpage`}>Me on GitHub</Link>
+          </li>
         </ul>
       </nav>
       <Outlet />

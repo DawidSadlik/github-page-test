@@ -7,6 +7,7 @@ import App from "./App";
 import { RouterProvider, createHashRouter } from "react-router-dom";
 import "./index.css";
 import RepositoryPage from "./pages/RepositoryPage";
+import MeOnGitHubPage from "./pages/MeOnGitHubPage";
 
 const router = createHashRouter([
   {
@@ -28,6 +29,10 @@ const router = createHashRouter([
       {
         path: "repository/:repositoryName",
         element: <RepositoryPage />,
+      },
+      {
+        path: "meongithubpage",
+        element: <MeOnGitHubPage />,
       },
     ],
   },
