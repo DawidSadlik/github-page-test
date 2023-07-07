@@ -2,26 +2,33 @@ import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
 import React from "react";
 import { UserContext } from "../services/UserContext";
+import { Container, Nav, Navbar } from "react-bootstrap";
 
 const Root = () => {
   return (
     <div>
-      <nav>
-        <ul>
-          <li>
-            <Link to={`/`}>Home</Link>
-          </li>
-          <li>
-            <Link to={`aboutme`}>About me</Link>
-          </li>
-          <li>
-            <Link to={`contact`}>Contact</Link>
-          </li>
-          <li>
-            <Link to={`meongithubpage`}>Me on GitHub</Link>
-          </li>
-        </ul>
-      </nav>
+      <Navbar expand="lg" className="bg-body-tertiary">
+        <Container>
+          <Navbar.Brand>React test</Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse>
+            <Nav className="me-auto">
+              <Nav.Link>
+                <Link to={`/`}>Home</Link>
+              </Nav.Link>
+              <Nav.Link>
+                <Link to={`aboutme`}>About me</Link>
+              </Nav.Link>
+              <Nav.Link>
+                <Link to={`contact`}>Contact</Link>
+              </Nav.Link>
+              <Nav.Link>
+                <Link to={`meongithubpage`}>Me on GitHub</Link>
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
       <Outlet />
       {/* <UserContext.Provider value={{ value: "Some value", name: "Some name" }}>
         <Outlet />
