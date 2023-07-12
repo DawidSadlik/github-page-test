@@ -15,10 +15,15 @@ const MeOnGitHub = () => {
       <h1>Me On Github</h1>
       <Container>
         <Row>
-          <Col>
-            <Image src={user.avatar_url} roundedCircle className="m-10" />
+          <Col lg={6}>
+            <Image
+              src={user.avatar_url}
+              roundedCircle
+              fluid
+              className="text-center"
+            />
           </Col>
-          <Col>
+          <Col lg={6}>
             <Table>
               <tbody>
                 {properties.map((p) => (

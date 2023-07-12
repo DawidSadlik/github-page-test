@@ -11,6 +11,9 @@ export const MeOnGitHubContextProvider = ({ children, userName }) => {
   const [user, setUser] = useState(undefined);
   const [repositories, setRepositories] = useState([]);
   const [currentRepository, setCurrentRepository] = useState(undefined);
+  const [reposResponseHeaders, setReposresponseHeaders] = useState(
+    createLinksResponse()
+  );
 
   useEffect(() => {
     Promise.all([
@@ -18,6 +21,7 @@ export const MeOnGitHubContextProvider = ({ children, userName }) => {
       fetch(`https://api.github.com/users/${userName}/repos`),
     ])
       .then(([userResponse, reposResponse]) => {
+        console.log(formatPagingLinks(reposResponse.headers.get("link")));
         Promise.all([userResponse.json(), reposResponse.json()])
           .then(([userData, reposData]) => {
             setRepositories(reposData);
@@ -30,12 +34,53 @@ export const MeOnGitHubContextProvider = ({ children, userName }) => {
 
   return (
     <MeOnGitHubContext.Provider
-      value={{ user, repositories, currentRepository, setCurrentRepository }}
+      value={{
+        user,
+        repositories,
+        currentRepository,
+        setCurrentRepository,
+      }}
     >
       {children}
     </MeOnGitHubContext.Provider>
   );
 };
+
+function createLinksResponse() {
+  return {
+    first: undefined,
+    last: undefined,
+    next: undefined,
+    prev: undefined,
+    prevPageNumber: -1,
+    nextPageNumber: -1,
+    lastPageNumber: -1,
+  };
+}
+
+function formatPagingLinks(linkHeaderValue) {
+  const linksByRel = linkHeaderValue.split(",");
+  let result = createLinksResponse();
+  linksByRel.forEach((link) => {
+    if (link.includes('rel="first"')) {
+      result.first = extractUrlFromLink(link);
+    } else if (link.includes('rel="last"')) {
+      result.last = extractUrlFromLink(link);
+    } else if (link.includes('rel="prev"')) {
+      result.prev = extractUrlFromLink(link);
+    } else if (link.includes('rel="next"')) {
+      result.next = extractUrlFromLink(link);
+    }
+  });
+  return result;
+}
+
+function extractUrlFromLink(linkWithUrlInside) {
+  return linkWithUrlInside.substring(
+    linkWithUrlInside.indexOf("<") + 1,
+    linkWithUrlInside.lastIndexOf(">")
+  );
+}
 
 export const useMeOnGitHubContextProvider = () => {
   return useContext(MeOnGitHubContext);
