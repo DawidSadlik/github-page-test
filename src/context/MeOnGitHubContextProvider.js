@@ -66,10 +66,13 @@ function formatPagingLinks(linkHeaderValue) {
       result.first = extractUrlFromLink(link);
     } else if (link.includes('rel="last"')) {
       result.last = extractUrlFromLink(link);
+      result.lastPageNumber = extractPageValueFromUrl(result.last);
     } else if (link.includes('rel="prev"')) {
       result.prev = extractUrlFromLink(link);
+      result.prevPageNumber = extractPageValueFromUrl(result.prev);
     } else if (link.includes('rel="next"')) {
       result.next = extractUrlFromLink(link);
+      result.nextPageNumber = extractPageValueFromUrl(result.next);
     }
   });
   return result;
@@ -80,6 +83,12 @@ function extractUrlFromLink(linkWithUrlInside) {
     linkWithUrlInside.indexOf("<") + 1,
     linkWithUrlInside.lastIndexOf(">")
   );
+}
+
+function extractPageValueFromUrl(url) {
+  const parametersSubstring = url.substring(url.indexOf("?"));
+  const parameters = new URLSearchParams(parametersSubstring);
+  return parseInt(parameters.get("page")) ?? -1;
 }
 
 export const useMeOnGitHubContextProvider = () => {
