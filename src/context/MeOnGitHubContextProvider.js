@@ -5,6 +5,7 @@ const MeOnGitHubContext = createContext({
   repositories: [],
   currentRepository: undefined,
   setCurrentRepository: () => {},
+  reposResponseHeaders: undefined,
 });
 
 export const MeOnGitHubContextProvider = ({ children, userName }) => {
@@ -14,6 +15,8 @@ export const MeOnGitHubContextProvider = ({ children, userName }) => {
   const [reposResponseHeaders, setReposresponseHeaders] = useState(
     createLinksResponse()
   );
+  const [newReposPageUrlProvided, setNewReposPageUrlProvided] =
+    useState(undefined);
 
   useEffect(() => {
     Promise.all([
@@ -21,7 +24,9 @@ export const MeOnGitHubContextProvider = ({ children, userName }) => {
       fetch(`https://api.github.com/users/${userName}/repos`),
     ])
       .then(([userResponse, reposResponse]) => {
-        console.log(formatPagingLinks(reposResponse.headers.get("link")));
+        setReposresponseHeaders(
+          formatPagingLinks(reposResponse.headers.get("link"))
+        );
         Promise.all([userResponse.json(), reposResponse.json()])
           .then(([userData, reposData]) => {
             setRepositories(reposData);
@@ -32,6 +37,16 @@ export const MeOnGitHubContextProvider = ({ children, userName }) => {
       .catch((fetchinError) => {});
   }, []);
 
+  useEffect(() => {
+    if (!newReposPageUrlProvided) {
+      return;
+    }
+
+    fetch(newReposPageUrlProvided)
+      .then((response) => response.json())
+      .then((data) => setRepositories(data));
+  }, [newReposPageUrlProvided]);
+
   return (
     <MeOnGitHubContext.Provider
       value={{
@@ -39,6 +54,7 @@ export const MeOnGitHubContextProvider = ({ children, userName }) => {
         repositories,
         currentRepository,
         setCurrentRepository,
+        reposResponseHeaders,
       }}
     >
       {children}
