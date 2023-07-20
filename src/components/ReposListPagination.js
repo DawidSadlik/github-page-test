@@ -3,7 +3,8 @@ import { Pagination } from "react-bootstrap";
 import { useMeOnGitHubContextProvider } from "../context/MeOnGitHubContextProvider";
 
 export const ReposListPagination = () => {
-  const { reposResponseHeaders } = useMeOnGitHubContextProvider();
+  const { reposResponseHeaders, setNewReposPageUrlProvided } =
+    useMeOnGitHubContextProvider();
   const [options, setOptions] = useState({
     prevEnabled: false,
     leftEllipsisVisible: false,
@@ -17,16 +18,112 @@ export const ReposListPagination = () => {
     nextEnabled: false,
   });
 
-  if (reposResponseHeaders.last && reposResponseHeaders.last >= 1) {
-    setOptions({ ...options, item1Value: 1, item1Visible: true });
+  let newOptions = { ...options };
+  const currentPageNumber = reposResponseHeaders.currentPageNumber;
+
+  if (reposResponseHeaders.last && reposResponseHeaders.lastPageNumber < 2) {
+    newOptions = {
+      ...newOptions,
+      item1Value: 1,
+      item1Visible: true,
+      item2Visible: false,
+      item3Visible: false,
+    };
+  } else if (
+    reposResponseHeaders.last &&
+    reposResponseHeaders.lastPageNumber < 3
+  ) {
+    newOptions = {
+      ...newOptions,
+      item1Value: 1,
+      item2Value: 2,
+      item1Visible: true,
+      item2Visible: true,
+      item3Visible: false,
+    };
+  } else if (currentPageNumber === 1) {
+    newOptions = {
+      ...newOptions,
+      item1Value: 1,
+      item2Value: 2,
+      item3Value: 3,
+      item1Visible: true,
+      item2Visible: true,
+      item3Visible: true,
+    };
+  } else if (currentPageNumber === reposResponseHeaders.lastPageNumber) {
+    newOptions = {
+      ...newOptions,
+      item1Value: reposResponseHeaders.lastPageNumber - 2,
+      item2Value: reposResponseHeaders.lastPageNumber - 1,
+      item3Value: reposResponseHeaders.lastPageNumber,
+      item1Visible: true,
+      item2Visible: true,
+      item3Visible: true,
+    };
+  } else {
+    newOptions = {
+      ...newOptions,
+      item1Value: currentPageNumber - 1,
+      item2Value: currentPageNumber,
+      item3Value: currentPageNumber + 1,
+      item1Visible: true,
+      item2Visible: true,
+      item3Visible: true,
+    };
+  }
+
+  if (currentPageNumber == reposResponseHeaders.lastPageNumber)
+    if (newOptions.item1Visible) {
+      newOptions = {
+        ...newOptions,
+        leftEllipsisVisible: newOptions.item1Value > 1,
+      };
+    }
+
+  if (
+    Object.entries(options).toString() !== Object.entries(newOptions).toString()
+  ) {
+    setOptions(newOptions);
+  }
+
+  function paginationButtonClicked(buttonType) {
+    switch (buttonType) {
+      case BUTTON_TYPE.FIRST:
+        setNewReposPageUrlProvided(reposResponseHeaders.first);
+        break;
+      case BUTTON_TYPE.PREV:
+        break;
+      case BUTTON_TYPE.RIGHT_ELLIPSIS:
+        break;
+      case BUTTON_TYPE.ITEM1:
+        break;
+      case BUTTON_TYPE.ITEM2:
+        break;
+      case BUTTON_TYPE.ITEM3:
+        break;
+      case BUTTON_TYPE.LEFT_ELLIPSIS:
+        break;
+      case BUTTON_TYPE.NEXT:
+        break;
+      case BUTTON_TYPE.LAST:
+        setNewReposPageUrlProvided(reposResponseHeaders.last);
+        break;
+    }
   }
 
   return (
     <>
       <Pagination>
-        <Pagination.First />
+        <Pagination.First
+          onClick={() => paginationButtonClicked(BUTTON_TYPE.FIRST)}
+        />
         <Pagination.Prev />
-        <Pagination.Ellipsis />
+        {options.leftEllipsisVisible && (
+          <Pagination.Ellipsis
+            onClick={() => paginationButtonClicked(BUTTON_TYPE.LEFT_ELLIPSIS)}
+          />
+        )}
         {options.item1Visible && (
           <Pagination.Item>{options.item1Value}</Pagination.Item>
         )}
@@ -36,10 +133,24 @@ export const ReposListPagination = () => {
         {options.item3Visible && (
           <Pagination.Item>{options.item3Value}</Pagination.Item>
         )}
-        <Pagination.Ellipsis />
+        {options.rightEllipsisVisible && <Pagination.Ellipsis />}
         <Pagination.Next />
-        <Pagination.Last />
+        <Pagination.Last
+          onClick={() => paginationButtonClicked(BUTTON_TYPE.LAST)}
+        />
       </Pagination>
     </>
   );
+};
+
+const BUTTON_TYPE = {
+  FIRST: "first",
+  PREV: "prev",
+  LEFT_ELLIPSIS: "leftEllipsis",
+  ITEM1: "item1",
+  ITEM2: "item2",
+  ITEM3: "item3",
+  RIGHT_ELLIPSIS: "rightEllipsis",
+  NEXT: "next",
+  LAST: "last",
 };

@@ -6,13 +6,16 @@ import { ReposListPagination } from "./ReposListPagination";
 const RepositoryTable = () => {
   const { repositories } = useMeOnGitHubContextProvider();
 
+  if (!repositories) return <h1>Loading...</h1>;
+  if (repositories.length === 0) return <h1>Empty</h1>;
+
   return (
     <>
       <Table>
         <tbody>
           {repositories.map((r) => (
             <tr>
-              <td>{r.name}</td>
+              <td key={r.name}>{r.name}</td>
             </tr>
           ))}
         </tbody>
