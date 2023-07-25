@@ -115,7 +115,16 @@ function formatPagingLinks(linkHeaderValue) {
     result.prevPageNumber = -1;
     result.lastPageNumber = extractPageValueFromUrl(result.last);
     result.nextPageNumber = extractPageValueFromUrl(result.next);
+  } else if (linkPrev && linkNext) {
+    result.prev = extractUrlFromLink(linkPrev);
+    result.next = extractUrlFromLink(linkNext);
+    result.prevPageNumber = extractPageValueFromUrl(result.prev);
+    result.nextPageNumber = extractPageValueFromUrl(result.next);
+  } else {
+    throw Error("Unhandled pagination case");
   }
+
+  result.emptyTemplate = extractPageUrl(result.prev ?? result.next);
 
   // linksByRel.forEach((link) => {
   //   if (link.includes('rel="first"')) {
@@ -145,6 +154,10 @@ function extractPageValueFromUrl(url) {
   const parametersSubstring = url.substring(url.indexOf("?"));
   const parameters = new URLSearchParams(parametersSubstring);
   return parseInt(parameters.get("page")) ?? -1;
+}
+
+function extractPageUrl(url) {
+  return url.substring(0, url.indexOf("?") + 1);
 }
 
 export const useMeOnGitHubContextProvider = () => {

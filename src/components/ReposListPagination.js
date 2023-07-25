@@ -87,7 +87,7 @@ export const ReposListPagination = () => {
     setOptions(newOptions);
   }
 
-  function paginationButtonClicked(buttonType) {
+  function paginationButtonClicked(buttonType, value) {
     switch (buttonType) {
       case BUTTON_TYPE.FIRST:
         setNewReposPageUrlProvided(reposResponseHeaders.first);
@@ -97,10 +97,11 @@ export const ReposListPagination = () => {
       case BUTTON_TYPE.RIGHT_ELLIPSIS:
         break;
       case BUTTON_TYPE.ITEM1:
-        break;
       case BUTTON_TYPE.ITEM2:
-        break;
       case BUTTON_TYPE.ITEM3:
+        setNewReposPageUrlProvided(
+          reposResponseHeaders.emptyTemplate + `&page=${value}`
+        );
         break;
       case BUTTON_TYPE.LEFT_ELLIPSIS:
         break;
@@ -125,13 +126,31 @@ export const ReposListPagination = () => {
           />
         )}
         {options.item1Visible && (
-          <Pagination.Item>{options.item1Value}</Pagination.Item>
+          <Pagination.Item
+            onClick={() =>
+              paginationButtonClicked(BUTTON_TYPE.ITEM1, options.item1Value)
+            }
+          >
+            {options.item1Value}
+          </Pagination.Item>
         )}
         {options.item2Visible && (
-          <Pagination.Item>{options.item2Value}</Pagination.Item>
+          <Pagination.Item
+            onClick={() =>
+              paginationButtonClicked(BUTTON_TYPE.ITEM2, options.item2Value)
+            }
+          >
+            {options.item2Value}
+          </Pagination.Item>
         )}
         {options.item3Visible && (
-          <Pagination.Item>{options.item3Value}</Pagination.Item>
+          <Pagination.Item
+            onClick={() =>
+              paginationButtonClicked(BUTTON_TYPE.ITEM3, options.item3Value)
+            }
+          >
+            {options.item3Value}
+          </Pagination.Item>
         )}
         {options.rightEllipsisVisible && <Pagination.Ellipsis />}
         <Pagination.Next />
